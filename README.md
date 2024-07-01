@@ -1,52 +1,70 @@
-# Music for Airports
+# Getting Started with Create React App
 
-A JavaScript edition of [Ambient 1: Music for Airports 2/1](https://en.wikipedia.org/wiki/Ambient_1:_Music_for_Airports)
-by Brian Eno, as built in the [JavaScript Systems Music](http://teropa.info/blog/2016/07/28/javascript-systems-music.html) guide.
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-See live demos [here](http://teropa.info/blog/2016/07/28/javascript-systems-music.html#putting-it-together-launching-the-loops) and [here](http://teropa.info/blog/2016/07/28/javascript-systems-music.html#exploring-variations-on-music-for-airports).
+## Available Scripts
 
-![Screenshot](/dist/screenshot.png?raw=true)
+In the project directory, you can run:
 
-Uses instrument samples from the [Sonatina Symphonic Orchestra](http://sso.mattiaswestlund.net/download.html). You can get more of them by downloading the ZIP from their site.
+### `npm start`
 
-Also uses an impulse response sample from [AirWindows](http://www.airwindows.com/airwindows-impulses/).
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-This project setup differs from the one in the article in the following:
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-1. The canvas visualization is included as well, not just the music.
-2. Sample buffers are cached in memory instead of fetching them anew each time.
-3. Babel is used for ES2015 to ES5 compilation instead of running ES2015 natively in the browser.
+### `npm test`
 
-## Development
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-1. `npm install`
-2. `npm run start`
+### `npm run build`
 
-This installs a live local server as well as a Babel compiler watcher. Changes in `src` are picked up automatically.
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-## Build and Deployment
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-To build the project, just invoke `npm run build`. Everything you need will be in the `dist` folder:
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-* `index.html` to host the application
-* `musicforairport.js`, the compiled source code of the app.
-* `musicforairports.min.js`, a minified version of the source code.
-* `Samples` samples used to play the music and to generate the convolution reverb.
+### `npm run eject`
 
-### Embedding
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-If you want to embed the player on an existing website, take a look at `index.html`. There are three key parts you need to take from there and add to your page:
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-* A `<canvas>` element with id `music-for-airports`.
-* The whatwg-fetch polyfill and the Web Audio API shim libraries for cross-browser compatibility.
-* The `musicforairports.js` or `musicforairports.min.js` script tag.
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-## License
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-ISC License
+## Learn More
 
-Copyright (c) 2016, Tero Parviainen
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+To learn React, check out the [React documentation](https://reactjs.org/).
 
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+### Code Splitting
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+
+### Analyzing the Bundle Size
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+
+### Making a Progressive Web App
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+
+### Advanced Configuration
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+
+### Deployment
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+
+### `npm run build` fails to minify
+
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
