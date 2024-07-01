@@ -1,15 +1,34 @@
 <!DOCTYPE html>
 <html>
 <body>
-  <!-- Change the CSS width+height to adjust size, but keep the width and height properties at 1000 -->
+  <!-- CSSのwidthとheightを変更してサイズを調整できますが、widthとheightのプロパティは1000のままにしてください -->
   <canvas id="music-for-airports" width="1000" height="1000" style="width: 800px; height: 800px;"></canvas>
 
+  <div>
+    <button id="play-button">再生</button>
+    <button id="stop-button">停止</button>
+  </div>
+
+  <!-- 角度表示用のテーブル -->
+  <table id="angles-table" border="1">
+    <thead>
+      <tr>
+        <th>Note</th>
+        <th>Tone</th>
+        <th>Angle (degrees)</th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  
   <!-- Polyfills -->
   <script src="https://cdn.rawgit.com/mohayonao/web-audio-api-shim/master/build/web-audio-api-shim.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/1.0.0/fetch.min.js"></script>
 
   <script src="musicforairports.js"></script>
-  <!-- Alternatively use the minified build -->
+  <!-- もしくはminifiedバージョンを使用 -->
   <!-- <script src="musicforairports.min.js"></script> -->
 </body>
 </html>

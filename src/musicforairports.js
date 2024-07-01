@@ -35,8 +35,9 @@ let sampleCache = {};
 
 let canvas = document.getElementById('music-for-airports');
 let context = canvas.getContext('2d');
+let anglesTableBody = document.getElementById('angles-table').getElementsByTagName('tbody')[0];
 
-// Control variable, set to start time when playing begins
+// コントロール変数、再生が始まると開始時間に設定されます
 let playingSince = null;
 
 function fetchSample(path) {
@@ -111,7 +112,9 @@ function render() {
   context.lineWidth = 30;
   context.lineCap = 'round';
   let radius = 280;
-  for (const {duration, delay} of LOOPS) {
+  anglesTableBody.innerHTML = '';  // テーブルの内容をクリア
+  for (let i = 0; i < LOOPS.length; i++) {
+    const {duration, delay, note} = LOOPS[i];
     const size = Math.PI * 2 / duration;
     const offset = playingSince ? audioContext.currentTime - playingSince : 0;
     const startAt = (delay - offset) * size;
@@ -127,6 +130,27 @@ function render() {
     context.arc(325, 325, radius, startAt, endAt);
     context.stroke();
 
+    // 角度を0から360度の範囲で整数の度数法に変換してテーブルに追加
+    let angleDegrees = Math.floor(startAt * (180 / Math.PI));
+    if (angleDegrees < 0) angleDegrees = 360 + angleDegrees;
+
+    // 最初のループの角度は入力フィールドから取得
+    if (i === 0) {
+      const angleInput = document.getElementById('angle-f4');
+      if (angleInput) {
+        angleDegrees = parseInt(angleInput.value, 10);
+      }
+    }
+
+    const row = anglesTableBody.insertRow();
+    const cell1 = row.insertCell(0);
+    const cell2 = row.insertCell(1);
+    const cell3 = row.insertCell(2);
+    
+    cell1.textContent = i + 1;
+    cell2.textContent = note;  // なる音の音階を表示
+    cell3.textContent = angleDegrees;
+    cell3.style.textAlign = "right";  // 右揃えに設定
     radius -= 35;
   }
   if (playingSince) {
@@ -155,19 +179,24 @@ fetchSample('Samples/AirportTerminal.wav').then(convolverBuffer => {
 
   let convolver, runningLoops;
 
-  canvas.addEventListener('click', () => {
-    if (playingSince) {
-      convolver.disconnect();
-      runningLoops.forEach(l => clearInterval(l));
-      playingSince = null;
-    } else {
+  document.getElementById('play-button').addEventListener('click', () => {
+    if (!playingSince) {
       convolver = audioContext.createConvolver();
       convolver.buffer = convolverBuffer;
       convolver.connect(audioContext.destination);
       playingSince = audioContext.currentTime;
       runningLoops = LOOPS.map(loop => startLoop(loop, convolver));
+      render();
     }
-    render();
+  });
+
+  document.getElementById('stop-button').addEventListener('click', () => {
+    if (playingSince) {
+      convolver.disconnect();
+      runningLoops.forEach(l => clearInterval(l));
+      playingSince = null;
+      render();
+    }
   });
 
   render();
