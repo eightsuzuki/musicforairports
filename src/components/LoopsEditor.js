@@ -68,8 +68,8 @@ const LoopsEditor = ({ loops, onLoopsChange }) => {
                   type="number"
                   value={loop.duration}
                   onChange={(e) => handleDurationChange(index, e.target.value)}
-                  step="0.1"
-                  min="0.1"
+                  step="1"
+                  min="1"
                   onBlur={(e) => handleDurationChange(index, e.target.value)} // キーボード入力対応
                 />
               </td>
@@ -78,8 +78,8 @@ const LoopsEditor = ({ loops, onLoopsChange }) => {
                   type="number"
                   value={loop.delay}
                   onChange={(e) => handleDelayChange(index, e.target.value)}
-                  step="0.1"
-                  min="0.1"
+                  step="1"
+                  min="1"
                   onBlur={(e) => handleDelayChange(index, e.target.value)} // キーボード入力対応
                 />
               </td>
