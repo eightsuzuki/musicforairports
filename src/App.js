@@ -200,7 +200,6 @@ const App = () => {
   
     render();
   };
-  
 
   const startLoop = ({ instrument, note, duration, delay }, nextNode) => {
     playSample(instrument, note, nextNode, delay);
@@ -247,7 +246,6 @@ const App = () => {
       </div>
     </div>
   );
-  
 };
 
 export default App;
