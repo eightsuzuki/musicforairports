@@ -4,6 +4,7 @@ import Controls from "./components/Controls";
 import LoopsEditor from "./components/LoopsEditor";
 import "./App.css";
 
+// サンプルライブラリを定義。各サンプルは音階、オクターブ、ファイルパスを持つ。
 const SAMPLE_LIBRARY = {
   "Grand Piano": [
     { note: "A", octave: 4, file: "Samples/Grand Piano/piano-f-a4.wav" },
@@ -21,6 +22,7 @@ const SAMPLE_LIBRARY = {
   ],
 };
 
+// 音階の配列を定義
 const OCTAVE = [
   "C",
   "C#",
@@ -36,30 +38,33 @@ const OCTAVE = [
   "B",
 ];
 
+// 初期ループの設定
 const INITIAL_LOOPS = [
   { instrument: "Grand Piano", note: "F4", duration: 19.7, delay: 4 },
   { instrument: "Grand Piano", note: "Ab4", duration: 17.8, delay: 8.1 },
-  {instrument: 'Grand Piano', note: 'C5',  duration: 21.3, delay: 5.6},
-  {instrument: 'Grand Piano', note: 'Db5', duration: 18.5, delay: 12.6},
-  {instrument: 'Grand Piano', note: 'Eb5', duration: 20.0, delay: 9.2},
-  {instrument: 'Grand Piano', note: 'F5',  duration: 20.0, delay: 14.1},
-  {instrument: 'Grand Piano', note: 'Ab5', duration: 17.7, delay: 3.1}
+  { instrument: "Grand Piano", note: "C5", duration: 21.3, delay: 5.6 },
+  { instrument: "Grand Piano", note: "Db5", duration: 18.5, delay: 12.6 },
+  { instrument: "Grand Piano", note: "Eb5", duration: 20.0, delay: 9.2 },
+  { instrument: "Grand Piano", note: "F5", duration: 20.0, delay: 14.1 },
+  { instrument: "Grand Piano", note: "Ab5", duration: 17.7, delay: 3.1 }
 ];
 
+// キャンバスの色設定
 const LANE_COLOR = "rgba(220, 220, 220, 0.3)";
 const SOUND_COLOR = "#ED146F";
 
 const App = () => {
-  const [loops, setLoops] = useState(INITIAL_LOOPS);
-  const [playingSince, setPlayingSince] = useState(null);
+  const [loops, setLoops] = useState(INITIAL_LOOPS); // ループのステート
+  const [playingSince, setPlayingSince] = useState(null); // 再生開始時間のステート
   const [audioContext] = useState(
-    new (window.AudioContext || window.webkitAudioContext)()
+    new (window.AudioContext || window.webkitAudioContext)() // オーディオコンテキストの作成
   );
-  const sampleCache = useRef({});
-  const canvasRef = useRef(null);
-  const convolverRef = useRef(null);
-  const runningLoopsRef = useRef([]);
+  const sampleCache = useRef({}); // サンプルキャッシュの参照
+  const canvasRef = useRef(null); // キャンバスの参照
+  const convolverRef = useRef(null); // Convolverノードの参照
+  const runningLoopsRef = useRef([]); // 実行中のループの参照
 
+  // サンプルをフェッチしてキャッシュする関数
   const fetchSample = (path) => {
     if (!sampleCache.current[path]) {
       sampleCache.current[path] = fetch(encodeURIComponent(path))
@@ -69,11 +74,14 @@ const App = () => {
     return sampleCache.current[path];
   };
 
+  // 音階とオクターブから音の値を計算する関数
   const noteValue = (note, octave) => octave * 12 + OCTAVE.indexOf(note);
 
+  // 二つの音階の距離を計算する関数
   const getNoteDistance = (note1, octave1, note2, octave2) =>
     noteValue(note1, octave1) - noteValue(note2, octave2);
 
+  // 指定された音階に最も近いサンプルを取得する関数
   const getNearestSample = (sampleBank, note, octave) => {
     let sortedBank = sampleBank.slice().sort((sampleA, sampleB) => {
       let distanceToA = Math.abs(
@@ -87,6 +95,7 @@ const App = () => {
     return sortedBank[0];
   };
 
+  // フラット記号をシャープ記号に変換する関数
   const flatToSharp = (note) => {
     switch (note) {
       case "Bb":
@@ -104,18 +113,20 @@ const App = () => {
     }
   };
 
+  // サンプルを取得する関数
   const getSample = (instrument, noteAndOctave) => {
-    let [, requestedNote, requestedOctave] = /^(\w[b\#]?)(\d)$/.exec(
-      noteAndOctave
-    );
-    requestedOctave = parseInt(requestedOctave, 10);
-    requestedNote = flatToSharp(requestedNote);
+    // noteAndOctave（例："C4"）から音階とオクターブを抽出
+    let [, requestedNote, requestedOctave] = /^(\w[b\#]?)(\d)$/.exec(noteAndOctave);
+    requestedOctave = parseInt(requestedOctave, 10); // オクターブを整数に変換
+    requestedNote = flatToSharp(requestedNote); // フラット記号をシャープ記号に変換
+
+    // 指定された楽器のサンプルバンクを取得
     let sampleBank = SAMPLE_LIBRARY[instrument];
-    let nearestSample = getNearestSample(
-      sampleBank,
-      requestedNote,
-      requestedOctave
-    );
+
+    // 指定された音階とオクターブに最も近いサンプルを取得
+    let nearestSample = getNearestSample(sampleBank, requestedNote, requestedOctave);
+
+    // サンプルファイルをフェッチしてオーディオバッファを返す
     return fetchSample(nearestSample.file).then((audioBuffer) => ({
       audioBuffer: audioBuffer,
       distance: getNoteDistance(
@@ -127,19 +138,29 @@ const App = () => {
     }));
   };
 
+  // サンプルを再生する関数
   const playSample = (instrument, note, destination, delaySeconds = 0) => {
+    // サンプルを取得
     getSample(instrument, note).then(({ audioBuffer, distance }) => {
+      // 再生速度を計算
       let playbackRate = Math.pow(2, distance / 12);
+
+      // バッファソースノードを作成
       let bufferSource = audioContext.createBufferSource();
 
+      // バッファソースにオーディオバッファを設定
       bufferSource.buffer = audioBuffer;
       bufferSource.playbackRate.value = playbackRate;
 
+      // バッファソースを目的地ノードに接続
       bufferSource.connect(destination);
+
+      // 再生開始時間を設定
       bufferSource.start(audioContext.currentTime + delaySeconds);
     });
   };
 
+  // キャンバスをレンダリングする関数
   const renderCanvas = (canvas) => {
     const context = canvas.getContext("2d");
   
@@ -201,6 +222,7 @@ const App = () => {
     render();
   };
 
+  // ループを開始する関数
   const startLoop = ({ instrument, note, duration, delay }, nextNode) => {
     playSample(instrument, note, nextNode, delay);
     return setInterval(
@@ -209,6 +231,7 @@ const App = () => {
     );
   };
 
+  // 再生ボタンが押されたときの処理
   const handlePlay = () => {
     if (!playingSince) {
       convolverRef.current = audioContext.createConvolver();
@@ -226,15 +249,17 @@ const App = () => {
     }
   };
 
+  // 停止ボタンが押されたときの処理
   const handleStop = () => {
     if (playingSince) {
       convolverRef.current.disconnect();
       runningLoopsRef.current.forEach((l) => clearInterval(l));
       setPlayingSince(null);
-      window.location.reload(); // ページを再読み込み
+      window.location.reload(); 
     }
   };
 
+  // JSXのレンダリング部分
   return (
     <div className="app-container">
       <Canvas renderCanvas={renderCanvas} ref={canvasRef} />
